@@ -60,7 +60,6 @@ export class AuthService {
     const user = await this.userRepo.authUser({ ...registerUserDto });
 
     const payload = { sub: user._id.toString(), role: user.role };
-console.log(user._id.toString());
     const accessToken = await this.generateAccessToken(payload);
 
     const refreshToken = await this.createRefreshToken(payload);

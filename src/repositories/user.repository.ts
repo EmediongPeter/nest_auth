@@ -31,7 +31,6 @@ export class UserRepository {
       {new: true, upsert: true },
     );
 
-    console.log("🚀 ~ UserRepository ~ authUser ~ user:", user)
     return user;
   }
 

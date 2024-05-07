@@ -39,6 +39,12 @@ export class Recruiter {
   website: string;
 
   @Prop({ type: String })
+  email: string;
+  
+  @Prop({ type: String })
+  companyEmail: string;
+  
+  @Prop({ type: String })
   company: string;
 }
 

@@ -30,14 +30,12 @@ export class TalentCredentialsDto {
   email: string;
 
   @IsOptional()
-  @IsPhoneNumber()
   phoneNumber?: string;
 
   @IsOptional()
   country?: string;
 
   @IsOptional()
-  @IsEnum(['male', 'female'])
   gender?: string;
 
   @IsOptional()
@@ -82,10 +80,14 @@ export class RecruiterCredentialsDto {
   role: RecruiterRole.RECRUITER;
 
   @IsOptional()
-  @IsPhoneNumber()
   company: string;
 
   @IsOptional()
   @IsUrl()
   website: string;
+
+  @IsOptional()
+  @IsString()
+  @IsEmail()
+  companyEmail: string;
 }

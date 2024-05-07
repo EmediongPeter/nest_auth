@@ -34,6 +34,8 @@ export class UsersController {
   registerAsRecruiter(
     @Body() recruiterCredentialsDto: RecruiterCredentialsDto, //: Promise<User>
   ) {
+    console.log("🚀 ~ UsersController ~ recruiterCredentialsDto:", recruiterCredentialsDto)
+    
     return this.usersService.registerAsRecruiter(recruiterCredentialsDto);
   }
 
