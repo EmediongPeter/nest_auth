@@ -10,40 +10,37 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
-  RecruiterCredentialsDto,
-  TalentCredentialsDto,
+  EntriesDto,
+  TalentsDto,
 } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from '../../common/decorators';
 import { Request } from 'express';
+import { Entries, Talent } from './schemas/user.schema';
 
 @Controller('')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Public()
-  @Post('register/talent')
-  registerAsTalent(
-    @Body() talentCredentialsDto: TalentCredentialsDto, //: Promise<User>
-  ) {
-    return this.usersService.registerAsTalent(talentCredentialsDto);
+  @Post('register/entry')
+  entries(@Body() entriesDto: EntriesDto) : Promise<Entries>{
+    return this.usersService.entries(entriesDto);
   }
 
   @Public()
-  @Post('register/recruiter')
-  registerAsRecruiter(
-    @Body() recruiterCredentialsDto: RecruiterCredentialsDto, //: Promise<User>
-  ) {
-    console.log("🚀 ~ UsersController ~ recruiterCredentialsDto:", recruiterCredentialsDto)
-    
-    return this.usersService.registerAsRecruiter(recruiterCredentialsDto);
+  @Post('register/talent')
+  talents(@Body() talentsDto: TalentsDto) : Promise<Talent>{
+    return this.usersService.talents(talentsDto);
   }
 
-  @Get('user')
-  getUser(
-    @Req() request: Request, //: Promise<User>
-  ) {
-    const id = request.user["userId"]
-    return this.usersService.getUserProfile(id);
-  }
+  
+
+  // @Get('user')
+  // getUser(
+  //   @Req() request: Request, //: Promise<User>
+  // ) {
+  //   const id = request.user["userId"]
+  //   return this.usersService.getUserProfile(id);
+  // }
 }

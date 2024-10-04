@@ -8,7 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterCredentialsDto } from './dto/auth-credentials.dto';
+// import { RegisterCredentialsDto } from './dto/auth-credentials.dto';
 import { Public } from 'src/common/decorators';
 
 @Controller('admin')

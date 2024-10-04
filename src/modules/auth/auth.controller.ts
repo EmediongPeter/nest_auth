@@ -15,14 +15,13 @@ import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import {
   LoginCredentialsDto,
-  TokenCredentialstDto,
-  RegisterCredentialsDto,
 } from './dto/auth-credentials.dto';
 import { Request } from 'express';
 import { RefreshToken } from 'src/schemas';
 import { Public } from 'src/common/decorators';
 import { IAuthUser, LoginResponse } from './types';
 import { RefreshJwtAuthGuard } from 'src/common/guards/refresh-jwt-auth.guard';
+import { CreateUserDTO } from '../users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -30,8 +29,8 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  create(@Body() registerCredentials: RegisterCredentialsDto) {
-    return this.authService.register(registerCredentials);
+  create(@Body() createUserDTO: CreateUserDTO) {
+    return this.authService.register(createUserDTO);
   }
 
    @Public()
@@ -44,16 +43,16 @@ export class AuthController {
     return this.authService.login(email, password);
   }
 
-  @ApiOperation({
-    tags: ['Log out from current device'],
-    summary: 'Logs out user',
-  })
-  @ApiBearerAuth()
-  @Post('logout')
-  @HttpCode(HttpStatus.OK)
-  async logout(
-    @Body() { refreshToken }: TokenCredentialstDto,
-  ): Promise<void> {
-    return this.authService.logout(refreshToken);
-  }
+  // @ApiOperation({
+  //   tags: ['Log out from current device'],
+  //   summary: 'Logs out user',
+  // })
+  // @ApiBearerAuth()
+  // @Post('logout')
+  // @HttpCode(HttpStatus.OK)
+  // async logout(
+  //   @Body() { refreshToken }: TokenCredentialstDto,
+  // ): Promise<void> {
+  //   return this.authService.logout(refreshToken);
+  // }
 }

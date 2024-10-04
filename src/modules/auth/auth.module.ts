@@ -7,43 +7,23 @@ import { PassportModule } from '@nestjs/passport';
 /** */
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UserRepository } from 'src/repositories';
-import {
-  UserProfileSchema,
-  UserProfile,
-  RefreshToken,
-  RefreshTokenSchema,
-  Talent,
-  TalentSchema,
-  Recruiter,
-  RecruiterSchema,
-} from 'src/schemas';
 import { AccessTokenStrategy } from './strategy/access-token.strategy';
 import { RefreshTokenStrategy } from './strategy/refresh-token.strategy';
-import { AdminController } from './admin.controller';
-import { AuthRepository } from 'src/repositories/auth.repository';
-import { Authentication, AuthenticationSchema } from 'src/schemas/auth.schema';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
     JwtModule.register({
       global: true,
     }),
-    MongooseModule.forFeature([
-      { name: Authentication.name, schema: AuthenticationSchema },
-      { name: Talent.name, schema: TalentSchema },
-      { name: Recruiter.name, schema: RecruiterSchema },
-      { name: RefreshToken.name, schema: RefreshTokenSchema },
-    ]),
+    // MongooseModule.forFeature([]),
     PassportModule,
+    UsersModule,
   ],
-  controllers: [AuthController, AdminController],
+  controllers: [AuthController],
   providers: [
     AuthService,
-    AuthRepository,
-    UserRepository,
     AccessTokenStrategy,
-    RefreshTokenStrategy,
   ],
 })
 export class AuthModule {}

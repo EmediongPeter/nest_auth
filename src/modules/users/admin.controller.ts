@@ -17,23 +17,23 @@ import { QueryUserDto } from './dto/query-user.dto';
 export class AdminController {
   constructor(private readonly usersService: UsersService) {}
 
-  @IsAdmin()
-  @Get('talents')
-  getTalents() {
-    return this.usersService.getAllTalents();
-  }
-
-  @IsAdmin()
-  @Get('recruiters')
-  getRecruiters() {
-    return this.usersService.getAllRecruiters();
-  }
-
   // @IsAdmin()
-  // @Get('users/count')
-  // getCount(@Query() data: QueryUserDto): Promise<number> {
-  //   return this.usersService.getCount(data);
+  // @Get('talents')
+  // getTalents() {
+  //   return this.usersService.getAllTalents();
   // }
 
-  // createProfile(){}
+  // @IsAdmin()
+  // @Get('recruiters')
+  // getRecruiters() {
+  //   return this.usersService.getAllRecruiters();
+  // }
+
+  // // @IsAdmin()
+  // // @Get('users/count')
+  // // getCount(@Query() data: QueryUserDto): Promise<number> {
+  // //   return this.usersService.getCount(data);
+  // // }
+
+  // // createProfile(){}
 }

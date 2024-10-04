@@ -4,8 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
-import { RegisterCredentialsDto } from './dto/auth-credentials.dto';
-// import { UserDocument, userTypes } from 'src/schemas';
 import { IAuthUser, LoginResponse } from './types/auth.types';
 import { accessJwtConfig, refreshJwtConfig } from 'src/config/jwt.config';
 import { getTokenExpirationDate } from 'src/utils/getTokenExpiration';
@@ -23,11 +21,15 @@ import {
   AuthenticationDocument,
   AuthenticationSchema,
 } from 'src/schemas/auth.schema';
+import { UsersService } from '../users/users.service';
+import { CreateUserDTO } from '../users/dto/create-user.dto';
 
 /** Responsible for authenticating the user */
 @Injectable()
 export class AuthService {
   constructor(
+private readonly userService: UsersService, 
+
     @Inject(AuthRepository) private readonly authRepo: AuthRepository,
     @Inject(UserRepository) private readonly userRepo: UserRepository,
     private jwtService: JwtService,
@@ -46,27 +48,21 @@ export class AuthService {
     return 'Email registered. Please create a password for yourself';
   }
 
-  async register(registerUserDto: RegisterCredentialsDto) {
-    const { email, password } = registerUserDto;
+  async register(createUserDto: CreateUserDTO) {
+    const { email } = createUserDto;
 
     const foundUser = await this.authRepo.findOne({ email });
     if (foundUser && foundUser.password) {
       throw new InvalidEmailOrPasswordException('Invalid credentials');
     }
 
-    const hashedPassword = await this.generateHashPassword(password);
-    registerUserDto.password = hashedPassword;
+    const user = await this.userService.create(createUserDto);
 
-    const user = await this.userRepo.authUser({ ...registerUserDto });
-
-    const payload = { sub: user._id.toString(), role: user.role };
+    const payload = { sub: user.id.toString(), email: user.email };
     const accessToken = await this.generateAccessToken(payload);
+    
 
-    const refreshToken = await this.createRefreshToken(payload);
-
-    delete user.password;
-
-    return this.authResponseInterface({ user, accessToken, refreshToken });
+    return {...user, accessToken}
   }
 
   /** Validates if the inputted email exists and
@@ -77,14 +73,12 @@ export class AuthService {
   async login(email: string, password: string): Promise<LoginResponse> {
     const user = await this.validateUser(email, password);
 
-    const payload = { sub: user.id, role: user.role };
+    const payload = { sub: user.id, email: user.email };
 
     const accessToken = await this.generateAccessToken(payload);
 
-    const refreshToken = await this.createRefreshToken(payload);
     return {
       accessToken,
-      refreshToken,
     };
   }
 
@@ -141,8 +135,8 @@ export class AuthService {
   private async validateUser(
     email: string,
     password: string,
-  ): Promise<AuthenticationDocument> {
-    const user = await this.userRepo.findOne({ email });
+  ) {
+    const user = await this.userService.findOne(email);
 
     if (user) {
       const isPasswordValid = await this.comparePassword(
@@ -162,7 +156,7 @@ export class AuthService {
   /** Generates user's access token */
   private async generateAccessToken(payload: {
     sub: string;
-    role: string;
+    email: string;
   }): Promise<string> {
     const accessToken = await this.jwtService.signAsync(payload, {
       ...accessJwtConfig,

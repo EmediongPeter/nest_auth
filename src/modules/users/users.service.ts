@@ -1,64 +1,54 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import {
-  RecruiterCredentialsDto,
-  TalentCredentialsDto,
+  CreateUserDTO,
+  EntriesDto,
+  TalentsDto,
 } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { InvalidEmailOrPasswordException } from '../../common/exceptions/forbidden.exception';
-import { UserRepository } from 'src/repositories';
-import { QueryUserDto } from './dto/query-user.dto';
+import { Model, Types } from 'mongoose';
+import { Entries, EntriesDocument, Talent, TalentDocument, User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepo: UserRepository) {}
+  constructor(
+    @InjectModel(User.name)
+    private readonly userSchema: Model<UserDocument>, 
+    private readonly entriesSchema: Model<EntriesDocument>, 
+    @InjectModel(Talent.name)
+    private readonly talentsSchema: Model<TalentDocument> ) {}
 
-  async registerAsTalent(talentCredentialsDto: TalentCredentialsDto) {
-    const user = await this.userRepo.registerTalent({
-      ...talentCredentialsDto,
-    });
+  async create(userDTO: CreateUserDTO): Promise<User> {
+    const user = new this.userSchema;
+    user.firstName = userDTO.firstName;
+    user.lastName = userDTO.lastName;
+    user.email = userDTO.email;
 
+    const salt = await bcrypt.genSalt(); // 2.
+    user.password = await bcrypt.hash(userDTO.password, salt); // 3.
+
+    const savedUser = await this.userSchema.create(user);
+    delete savedUser.password;
+    return savedUser;
+  }
+
+  async findOne(email: string): Promise<User> {
+    const user = await this.userSchema.findOne({ email });
+    if (!user) {
+      throw new UnauthorizedException('Could not find user');
+    }
     return user;
   }
 
-  async registerAsRecruiter(recruiterCredentialsDto: RecruiterCredentialsDto) {
-    const user = await this.userRepo.registerRecruiter({
-      ...recruiterCredentialsDto,
-    });
-
-    return user;
+  async entries(entriesDto: EntriesDto): Promise<Entries> {
+    const entry = await this.entriesSchema.create(entriesDto);
+    return entry
   }
 
-  async getUserProfile(id: any) {
-    const user = await this.userRepo.getUserProfile(id);
-    return user;
+  async talents(talentsDto: TalentsDto): Promise<Talent> {
+    const talent = await this.talentsSchema.create(talentsDto);
+
+    return talent;
   }
 
-  async getAllTalents(data?: any) {
-    const talents = await this.userRepo.getAllTalents(data);
-
-    return talents;
-  }
-
-  async getAllRecruiters(data?: any) {
-    const Recruiters = await this.userRepo.getAllRecruiters(data);
-
-    return Recruiters;
-  }
-
-  // async getCount(data: QueryUserDto): Promise<number> {
-  //   // const count = await this.userRepo.getCount(data);
-  //   // return count;
-  // }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
 }

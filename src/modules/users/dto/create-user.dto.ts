@@ -9,9 +9,8 @@ import {
   IsEnum,
   IsUrl,
 } from 'class-validator';
-import { userTypes } from 'src/schemas/user.schema';
 
-export class TalentCredentialsDto {
+export class CreateUserDTO {
   @ApiProperty({ description: 'firstName of user', required: true })
   @IsNotEmpty()
   @IsString()
@@ -29,65 +28,120 @@ export class TalentCredentialsDto {
   @IsLowercase()
   email: string;
 
-  @IsOptional()
-  phoneNumber?: string;
-
-  @IsOptional()
-  country?: string;
-
-  @IsOptional()
-  gender?: string;
-
-  @IsOptional()
-  specialty?: string;
-
-  @IsOptional()
-  experience?: string;
-
-  @IsOptional()
-  availability?: string;
-
-  @IsOptional()
-  @IsUrl()
-  website?: string;
-
-  @IsOptional()
-  @IsUrl()
-  linkedIn?: string;
-}
-
-enum RecruiterRole {
-  RECRUITER = 'recruiter',
-}
-export class RecruiterCredentialsDto {
-  @ApiProperty({ description: 'name of user', required: true })
+  @ApiProperty({ description: 'required', required: true })
   @IsNotEmpty()
   @IsString()
-  name: string;
+  password: string;
+}
 
-  @ApiProperty({ description: 'valid email of the company', required: true })
+export class EntriesDto {
+  @ApiProperty({ description: 'firstName of user', required: true })
+  @IsNotEmpty()
+  @IsString()
+  firstName: string;
+
+  @ApiProperty({ description: 'last name of user', required: true })
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
+
+  @ApiProperty({ description: 'valid email of user', required: true })
   @IsNotEmpty()
   @IsString()
   @IsEmail()
   @IsLowercase()
   email: string;
 
-  @ApiProperty({ description: 'role', required: true })
+  @ApiProperty({ description: 'required', required: true })
   @IsNotEmpty()
   @IsString()
-  @IsLowercase()
-  @IsEnum(RecruiterRole)
-  role: RecruiterRole.RECRUITER;
+  gender: string;
 
-  @IsOptional()
-  company: string;
+  @ApiProperty({ description: 'address required', required: true })
+  @IsNotEmpty()
+  @IsString()
+  address: string;
 
-  @IsOptional()
-  @IsUrl()
-  website: string;
+  @ApiProperty({ description: 'skill of choice required', required: true })
+  @IsNotEmpty()
+  @IsString()
+  skill: string;
 
-  @IsOptional()
+  @ApiProperty({ description: 'state of origin required', required: true })
+  @IsNotEmpty()
+  @IsString()
+  state: string;
+
+  @ApiProperty({ description: 'local government of origin required', required: true })
+  @IsNotEmpty()
+  @IsString()
+  locality: string;
+
+  @ApiProperty({ description: 'age required', required: true })
+  @IsNotEmpty()
+  @IsString()
+  ageRange: string;
+
+  @ApiProperty({ description: 'referral source required', required: true })
+  @IsNotEmpty()
+  @IsString()
+  discoveryMethod: string
+}
+
+export class TalentsDto {
+  @ApiProperty({ description: 'firstName of user', required: true })
+  @IsNotEmpty()
+  @IsString()
+  firstName: string;
+
+  @ApiProperty({ description: 'last name of user', required: true })
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
+
+  @ApiProperty({ description: 'valid email of user', required: true })
+  @IsNotEmpty()
   @IsString()
   @IsEmail()
-  companyEmail: string;
+  @IsLowercase()
+  email: string;
+
+  @ApiProperty({ description: 'gender required', required: true })
+  @IsNotEmpty()
+  @IsString()
+  gender: string;
+
+  @ApiProperty({ description: 'working phone number required', required: true })
+  @IsNotEmpty()
+  @IsString()
+  @IsPhoneNumber()
+  phone: string;
+
+  @ApiProperty({ description: 'address of residence required', required: true })
+  @IsNotEmpty()
+  @IsString()
+  locality: string;
+
+  @ApiProperty({ description: 'skill of expertise required', required: true })
+  @IsNotEmpty()
+  @IsString()
+  skill: string;
+
+  @ApiProperty({ description: 'work preference', required: true, enum: ['Full-time', 'Part-time', 'Remote', 'On-site', 'Hybrid', 'Shift Work'] })
+  @IsNotEmpty()
+  @IsString()
+  availability: string;
+
+  @ApiProperty({ description: 'your active linkedin url or any other active channel', required: true })
+  @IsNotEmpty()
+  @IsString()
+  @IsUrl()
+  smLink: string;
+
+  @ApiProperty({ description: 'cv or resume', required: true })
+  @IsNotEmpty()
+  @IsString()
+  @IsUrl()
+  resume: string;
 }
+

@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'C:/Users/user/Projects/NestJS/anvith_backend/node_modules/rxjs';
 import { IS_ADMIN_KEY } from '../decorators/is-admin.decorator';
 import { userTypes } from 'src/schemas/user.schema';
 

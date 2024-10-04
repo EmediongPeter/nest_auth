@@ -9,5 +9,4 @@ export interface IAuthUser {
 
 export interface LoginResponse {
   accessToken: string;
-  refreshToken: string;
 }
