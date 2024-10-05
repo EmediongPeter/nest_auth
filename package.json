@@ -1,8 +1,8 @@
 {
-  "name": "rash.ai",
+  "name": "nest_auth",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Emediong Peter",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

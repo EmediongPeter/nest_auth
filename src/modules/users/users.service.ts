@@ -40,6 +40,18 @@ export class UsersService {
     return user;
   }
 
+  async findEntries(): Promise<Entries[]> {
+    const entries = await this.entriesSchema.find();
+   
+    return entries;
+  }
+
+  async findTalents(): Promise<Talent[]> {
+    const talents = await this.talentsSchema.find();
+    
+    return talents;
+  }
+
   async entries(entriesDto: EntriesDto): Promise<Entries> {
     const entry = await this.entriesSchema.create(entriesDto);
     return entry

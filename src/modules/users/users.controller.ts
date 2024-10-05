@@ -34,7 +34,15 @@ export class UsersController {
     return this.usersService.talents(talentsDto);
   }
 
-  
+  @Get('entries')
+  getEntries() : Promise<Entries[]>{
+    return this.usersService.findEntries();
+  }
+
+  @Get('talents')
+  getTalents() : Promise<Talent[]>{
+    return this.usersService.findTalents();
+  }
 
   // @Get('user')
   // getUser(
