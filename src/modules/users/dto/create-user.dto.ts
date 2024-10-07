@@ -114,7 +114,7 @@ export class TalentsDto {
   @ApiProperty({ description: 'working phone number required', required: true })
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumber()
+  // @IsPhoneNumber()
   phone: string;
 
   @ApiProperty({ description: 'address of residence required', required: true })
