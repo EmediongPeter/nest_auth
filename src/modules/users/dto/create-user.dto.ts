@@ -144,9 +144,9 @@ export class TalentsDto {
   smLink: string;
 
   @ApiProperty({ description: 'cv or resume', required: true })
-  @IsNotEmpty()
-  @IsString()
-  @IsUrl()
+  // @IsNotEmpty()
+  // @IsString()
+  // @IsUrl()
   resume: string;
 }
 
