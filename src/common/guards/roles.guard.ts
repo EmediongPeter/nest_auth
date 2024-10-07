@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'C:/Users/user/Projects/NestJS/anvith_backend/node_modules/rxjs';
 import { IS_ADMIN_KEY } from '../decorators/is-admin.decorator';
-import { userTypes } from 'src/schemas/user.schema';
+import { userTypes } from 'src/modules/users/schemas/user.schema';
 
 /** Checks if the user accessing the route is an admin
  *

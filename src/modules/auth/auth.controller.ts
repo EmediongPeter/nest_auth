@@ -15,7 +15,6 @@ import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { LoginCredentialsDto } from './dto/auth-credentials.dto';
 import { Request } from 'express';
-import { RefreshToken } from 'src/schemas';
 import { Public } from 'src/common/decorators';
 import { IAuthUser, LoginResponse } from './types';
 import { RefreshJwtAuthGuard } from 'src/common/guards/refresh-jwt-auth.guard';

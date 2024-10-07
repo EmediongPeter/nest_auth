@@ -1,26 +1,11 @@
 import { Injectable, Inject, ForbiddenException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 import { IAuthUser, LoginResponse } from './types/auth.types';
 import { accessJwtConfig, refreshJwtConfig } from 'src/config/jwt.config';
-import { getTokenExpirationDate } from 'src/utils/getTokenExpiration';
-import {
-  RefreshToken,
-  RefreshTokenDocument,
-} from 'src/schemas/refreshtoken.schema';
 import { hashConfig } from 'src/config/hash.config';
-import { RefreshTokenPayload } from './types/refresh-token-payload';
 import { InvalidEmailOrPasswordException } from 'src/common/exceptions/forbidden.exception';
-import { InvalidRefreshTokenException } from 'src/common/exceptions/invalid-refresh-token.exception';
-import { AuthRepository, UserRepository } from 'src/repositories';
-import {
-  Authentication,
-  AuthenticationDocument,
-  AuthenticationSchema,
-} from 'src/schemas/auth.schema';
 import { UsersService } from '../users/users.service';
 import { CreateUserDTO } from '../users/dto/create-user.dto';
 
@@ -115,24 +100,5 @@ export class AuthService {
     hashedData: string,
   ): Promise<boolean> {
     return await bcrypt.compare(data, hashedData);
-  }
-
-  /* Auth Response Interface */
-  private authResponseInterface(responseObject: {
-    user: AuthenticationDocument;
-    accessToken: string;
-    refreshToken: string;
-  }): IAuthUser {
-    const { user, accessToken, refreshToken } = responseObject;
-
-    const authUser = {
-      id: user._id,
-      email: user.email,
-      role: user.role,
-      accessToken,
-      refreshToken,
-    };
-
-    return authUser;
   }
 }
