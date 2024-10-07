@@ -22,7 +22,7 @@ export class RolesGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const isAdmin = this.reflector.getAllAndOverride<boolean>(IS_ADMIN_KEY, [
+    const isAdmin = this.reflector.getAllAndOverride<boolean>(IS_ADMIN_KEY, [  
       context.getHandler(),
       context.getClass(),
     ]);
