@@ -28,30 +28,15 @@ import { CreateUserDTO } from '../users/dto/create-user.dto';
 @Injectable()
 export class AuthService {
   constructor(
-private readonly userService: UsersService, 
+    private readonly userService: UsersService,
 
-    @Inject(AuthRepository) private readonly authRepo: AuthRepository,
-    @Inject(UserRepository) private readonly userRepo: UserRepository,
-    private jwtService: JwtService,
-    @InjectModel(RefreshToken.name)
-    private readonly refreshTokenSchema: Model<RefreshTokenDocument>,
-    @InjectModel(Authentication.name)
-    private readonly AuthenticationSchema: Model<AuthenticationDocument>,
+    private jwtService: JwtService
   ) {}
-
-  async checkEmail(email: string) {
-    const foundUser = await this.authRepo.findOne({ email });
-    if (foundUser && foundUser.password) {
-      return;
-    }
-
-    return 'Email registered. Please create a password for yourself';
-  }
 
   async register(createUserDto: CreateUserDTO) {
     const { email } = createUserDto;
 
-    const foundUser = await this.authRepo.findOne({ email });
+    const foundUser = await this.userService.findOne(email);
     if (foundUser && foundUser.password) {
       throw new InvalidEmailOrPasswordException('Invalid credentials');
     }
@@ -60,9 +45,8 @@ private readonly userService: UsersService,
 
     const payload = { sub: user.id.toString(), email: user.email };
     const accessToken = await this.generateAccessToken(payload);
-    
 
-    return {...user, accessToken}
+    return { user, accessToken };
   }
 
   /** Validates if the inputted email exists and
@@ -84,47 +68,7 @@ private readonly userService: UsersService,
 
   /** Deletes the refreshToken from the database*/
   async logout(refreshToken: string): Promise<void> {
-    await this.validateRefreshToken(refreshToken);
-
-    await this.refreshTokenSchema.deleteMany({ refreshToken });
-  }
-
-  /** Refreshes and rotates user's access and refresh tokens */
-  // async refreshToken(refreshToken: string): Promise<LoginResponse> {
-  //   const refreshTokenContent = await this.validateRefreshToken(refreshToken);
-
-  //   const foundUser = await this.userRepo.findOne({
-  //     _id: refreshTokenContent.sub,
-  //   });
-
-  //   const payload = { sub: foundUser._id.toString(), role: foundUser.role };
-
-  //   const accessToken = await this.generateAccessToken(payload);
-
-  //   const newRefreshToken = await this.rotateRefreshToken(
-  //     refreshToken,
-  //     refreshTokenContent,
-  //   );
-
-  //   return {
-  //     accessToken,
-  //     refreshToken: newRefreshToken,
-  //   };
-  // }
-
-  /** Send forgot password email to the user */
-  async forgotPassword() {}
-
-  /** Deletes all user's refresh tokens */
-  async logoutAll(userId: string): Promise<void> {
-    await this.refreshTokenSchema.deleteMany({ userId });
-  }
-
-  /** Returns all user's active tokens */
-  async findAllTokens(userId: string): Promise<RefreshToken[]> {
-    const tokens = await this.refreshTokenSchema.find({ _id: userId });
-
-    return tokens;
+    
   }
 
   /** Validates if the inputted email exists and
@@ -132,10 +76,7 @@ private readonly userService: UsersService,
    *
    * If not, throws an error
    */
-  private async validateUser(
-    email: string,
-    password: string,
-  ) {
+  private async validateUser(email: string, password: string) {
     const user = await this.userService.findOne(email);
 
     if (user) {
@@ -163,92 +104,6 @@ private readonly userService: UsersService,
     });
 
     return accessToken;
-  }
-
-  /** Creates the refresh token and saves it in the database */
-  private async createRefreshToken(payload: { sub: string }): Promise<string> {
-    const refreshToken = await this.jwtService.signAsync(
-      { ...payload },
-      { ...refreshJwtConfig },
-    );
-
-    await this.saveRefreshToken({
-      userId: payload.sub,
-      refreshToken,
-    });
-
-    return refreshToken;
-  }
-
-  /** Saves the new refresh token hashed in the database */
-  private async saveRefreshToken(refreshTokenCredentials: {
-    userId: string;
-    refreshToken: string;
-  }): Promise<void> {
-    const expiresAt = getTokenExpirationDate();
-
-    const storedRefreshToken = await this.refreshTokenSchema.findOne({
-      userId: refreshTokenCredentials.userId,
-    });
-
-    if (storedRefreshToken) {
-      await this.refreshTokenSchema.deleteMany({
-        userId: refreshTokenCredentials.userId,
-      });
-    }
-
-    await this.refreshTokenSchema.create({
-      ...refreshTokenCredentials,
-      expiresAt,
-    });
-  }
-
-  /** Checks if the refresh token is valid */
-  private async validateRefreshToken(refreshToken: string): Promise<any> {
-    const refreshTokenContent = this.jwtService.decode(refreshToken);
-
-    const userTokens = await this.refreshTokenSchema.find({
-      userId: refreshTokenContent.sub,
-      refreshToken,
-    });
-
-    const isRefreshTokenValid = userTokens.length > 0;
-
-    if (!isRefreshTokenValid) {
-      await this.removeRefreshTokenFamilyIfCompromised(refreshTokenContent.sub);
-      throw new InvalidRefreshTokenException();
-    }
-
-    return refreshTokenContent;
-  }
-
-  /** Removes a compromised refresh token family from the database */
-  private async removeRefreshTokenFamilyIfCompromised(
-    userId: string,
-  ): Promise<void> {
-    const hackedUserTokens = await this.refreshTokenSchema.find({
-      userId,
-    });
-
-    if (hackedUserTokens.length > 0) {
-      await this.refreshTokenSchema.deleteMany({
-        userId,
-      });
-    }
-  }
-
-  /** Removes the old token from the database and creates a new one */
-  private async rotateRefreshToken(
-    refreshToken: string,
-    refreshTokenContent: RefreshTokenPayload,
-  ): Promise<string> {
-    await this.refreshTokenSchema.deleteMany({ refreshToken });
-
-    const newRefreshToken = await this.createRefreshToken({
-      sub: refreshTokenContent.sub,
-    });
-
-    return newRefreshToken;
   }
 
   private async generateHashPassword(data: string): Promise<string> {

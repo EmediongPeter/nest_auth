@@ -127,6 +127,11 @@ export class TalentsDto {
   @IsString()
   skill: string;
 
+  @ApiProperty({ description: 'experience level', required: true, enum: ['Beginner', 'Intermediate', 'Expert', 'Professional'] })
+  @IsNotEmpty()
+  @IsString()
+  experience: string;
+
   @ApiProperty({ description: 'work preference', required: true, enum: ['Full-time', 'Part-time', 'Remote', 'On-site', 'Hybrid', 'Shift Work'] })
   @IsNotEmpty()
   @IsString()

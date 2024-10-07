@@ -14,7 +14,7 @@ import { Entries, EntriesSchema, Talent, TalentSchema, User, UserSchema } from '
       { name: Entries.name, schema: EntriesSchema },
     ]),
   ],
-  controllers: [UsersController, AdminController],
+  controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],
 })

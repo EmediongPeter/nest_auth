@@ -13,9 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
-import {
-  LoginCredentialsDto,
-} from './dto/auth-credentials.dto';
+import { LoginCredentialsDto } from './dto/auth-credentials.dto';
 import { Request } from 'express';
 import { RefreshToken } from 'src/schemas';
 import { Public } from 'src/common/decorators';
@@ -33,7 +31,7 @@ export class AuthController {
     return this.authService.register(createUserDTO);
   }
 
-   @Public()
+  @Public()
   @Post('login')
   @ApiTags('Log In')
   @ApiOperation({ description: 'Logging user into the system' })

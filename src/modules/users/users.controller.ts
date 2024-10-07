@@ -24,23 +24,23 @@ export class UsersController {
 
   @Public()
   @Post('register/entry')
-  entries(@Body() entriesDto: EntriesDto) : Promise<Entries>{
+  entries(@Body() entriesDto: EntriesDto): Promise<Entries> {
     return this.usersService.entries(entriesDto);
   }
 
   @Public()
   @Post('register/talent')
-  talents(@Body() talentsDto: TalentsDto) : Promise<Talent>{
+  talents(@Body() talentsDto: TalentsDto): Promise<Talent> {
     return this.usersService.talents(talentsDto);
   }
 
   @Get('entries')
-  getEntries() : Promise<Entries[]>{
+  getEntries(): Promise<Entries[]> {
     return this.usersService.findEntries();
   }
 
   @Get('talents')
-  getTalents() : Promise<Talent[]>{
+  getTalents(): Promise<Talent[]> {
     return this.usersService.findTalents();
   }
 

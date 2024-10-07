@@ -13,13 +13,15 @@ import { Entries, EntriesDocument, Talent, TalentDocument, User, UserDocument } 
 export class UsersService {
   constructor(
     @InjectModel(User.name)
-    private readonly userSchema: Model<UserDocument>, 
-    private readonly entriesSchema: Model<EntriesDocument>, 
+    private readonly userSchema: Model<UserDocument>,
+    @InjectModel(Entries.name)
+    private readonly entriesSchema: Model<EntriesDocument>,
     @InjectModel(Talent.name)
-    private readonly talentsSchema: Model<TalentDocument> ) {}
+    private readonly talentsSchema: Model<TalentDocument>,
+  ) {}
 
   async create(userDTO: CreateUserDTO): Promise<User> {
-    const user = new this.userSchema;
+    const user = new this.userSchema();
     user.firstName = userDTO.firstName;
     user.lastName = userDTO.lastName;
     user.email = userDTO.email;
@@ -34,27 +36,27 @@ export class UsersService {
 
   async findOne(email: string): Promise<User> {
     const user = await this.userSchema.findOne({ email });
-    if (!user) {
-      throw new UnauthorizedException('Could not find user');
-    }
+    // if (!user) {
+    //   throw new UnauthorizedException('Could not find user');
+    // }
     return user;
   }
 
   async findEntries(): Promise<Entries[]> {
     const entries = await this.entriesSchema.find();
-   
+
     return entries;
   }
 
   async findTalents(): Promise<Talent[]> {
     const talents = await this.talentsSchema.find();
-    
+
     return talents;
   }
 
   async entries(entriesDto: EntriesDto): Promise<Entries> {
     const entry = await this.entriesSchema.create(entriesDto);
-    return entry
+    return entry;
   }
 
   async talents(talentsDto: TalentsDto): Promise<Talent> {
@@ -62,5 +64,4 @@ export class UsersService {
 
     return talent;
   }
-
 }
