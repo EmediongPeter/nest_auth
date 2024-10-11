@@ -79,7 +79,7 @@ export class UsersService {
   ): Promise<Talent> {
     if (file) {
       const resume = await this.cloudinary.uploadImage(file).catch((e) => {
-        console.log(e)
+        // console.log(e)
         throw new BadRequestException('Invalid file type or Network error');
       });
       if (resume) talentsDto.resume = resume.url;
