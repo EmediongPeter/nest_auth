@@ -38,7 +38,7 @@ export class UsersController {
     @Body() talentsDto: TalentsDto,
     @UploadedFile() file?: Express.Multer.File,
   ): Promise<Talent> {
-    console.log(talentsDto, file)
+    // console.log(talentsDto, file)
     return this.usersService.talents(talentsDto, file);
   }
 
