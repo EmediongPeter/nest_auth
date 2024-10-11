@@ -106,7 +106,7 @@ export class TalentsDto {
   @IsLowercase()
   email: string;
 
-  @ApiProperty({ description: 'gender required', required: true })
+  @ApiProperty({   description: 'gender required', required: true })
   @IsNotEmpty()
   @IsString()
   gender: string;
@@ -127,26 +127,43 @@ export class TalentsDto {
   @IsString()
   skill: string;
 
-  @ApiProperty({ description: 'experience level', required: true, enum: ['Beginner', 'Intermediate', 'Expert', 'Professional'] })
+  @ApiProperty({
+    description: 'experience level',
+    required: true,
+    enum: ['Beginner', 'Intermediate', 'Expert', 'Professional'],
+  })
   @IsNotEmpty()
   @IsString()
   experience: string;
 
-  @ApiProperty({ description: 'work preference', required: true, enum: ['Full-time', 'Part-time', 'Remote', 'On-site', 'Hybrid', 'Shift Work'] })
+  @ApiProperty({
+    description: 'work preference',
+    required: true,
+    enum: [
+      'Full-time',
+      'Part-time',
+      'Remote',
+      'On-site',
+      'Hybrid',
+      'Shift Work',
+    ],
+  })
   @IsNotEmpty()
   @IsString()
   availability: string;
 
-  @ApiProperty({ description: 'your active linkedin url or any other active channel', required: true })
+  @ApiProperty({
+    description: 'your active linkedin url or any other active channel',
+    required: true,
+  })
   @IsNotEmpty()
   @IsString()
   @IsUrl()
   smLink: string;
 
   @ApiProperty({ description: 'cv or resume', required: true })
-  // @IsNotEmpty()
-  // @IsString()
-  // @IsUrl()
-  resume: string;
+  @IsOptional()
+  @IsString()
+  resume: string;   
 }
 

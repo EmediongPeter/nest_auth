@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   Req,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
@@ -17,6 +19,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from '../../common/decorators';
 import { Request } from 'express';
 import { Entries, Talent } from './schemas/user.schema';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('')
 export class UsersController {
@@ -30,8 +33,13 @@ export class UsersController {
 
   @Public()
   @Post('register/talent')
-  talents(@Body() talentsDto: TalentsDto): Promise<Talent> {
-    return this.usersService.talents(talentsDto);
+  @UseInterceptors(FileInterceptor('resume'))
+  talents(
+    @Body() talentsDto: TalentsDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ): Promise<Talent> {
+    console.log(talentsDto, file)
+    return this.usersService.talents(talentsDto, file);
   }
 
   @Get('entries')
