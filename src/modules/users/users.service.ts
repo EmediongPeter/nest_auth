@@ -80,8 +80,8 @@ export class UsersService {
     if (file) {
       const resume = await this.cloudinary.uploadImage(file).catch((e) => {
         // console.log(e)
-        throw new BadRequestException('Invalid file type or Network error');
-      });
+       });
+      console.log(resume)
       if (resume) talentsDto.resume = resume.url;
     }
 
