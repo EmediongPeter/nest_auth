@@ -78,11 +78,9 @@ export class UsersService {
     file?: Express.Multer.File,
   ): Promise<Talent> {
     if (file) {
-      const resume = await this.cloudinary.uploadImage(file).catch((e) => {
-        // console.log(e)
-       });
+      const resume = await this.uploadImageToCloudinary(file)
       console.log(resume)
-      if (resume) talentsDto.resume = resume.url;
+      if (resume) talentsDto.resume = resume;
     }
 
     const talent = await this.talentsSchema.findOneAndUpdate(
@@ -93,4 +91,13 @@ export class UsersService {
 
     return talent;
   }
+
+  private async uploadImageToCloudinary(file: Express.Multer.File) {
+  const result = await this.cloudinary.uploadImage(file).catch(() => {
+    throw new BadRequestException('Invalid file type.');
+  });
+
+  return result.url;  // Extract the URL from the result
+  }
+    
 }
